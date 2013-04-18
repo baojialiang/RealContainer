@@ -1,4 +1,6 @@
 package real;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import common.Neo;
@@ -6,29 +8,45 @@ import common.Neo;
 public class Receiver {
 	
 	public static int port = 10000;
-	public static Socket socket;
 
-	public static void Receive() throws Exception {
-		socket = getSensorConnection();
-		getRemoteConnection();
-	}
-	
-	//from sensor connection
-	public static Socket getSensorConnection() throws Exception{
+	public static void Receive() {
 		while(true){
-			ServerSocket server = new ServerSocket(port);
-			return server.accept(); 
+			try{
+				getSensorConnection();	
+				getRemoteConnection();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 	}
 	
-	//from remote control connection
+	//from sensor connection	from zhiqiang's sensor
+	public static void getSensorConnection() throws Exception{
+		while(true){
+			ServerSocket server = new ServerSocket(port);
+			Neo.socket = server.accept();
+			if (validateRemoteAccess(Neo.socket)){
+				return;
+			}
+		}
+	}
+	
+	//from remote control connection, php side
 	public static void getRemoteConnection() throws Exception{
         ServerSocket server = new ServerSocket(port);
-        Socket client = null;
         while(true){
-        	client = server.accept();
-            Neo.pool.execute(new Sender(client));
+        	Socket client = server.accept();
+            Neo.pool.execute(new Processor(client));
         }
+	}
+	
+	//validate zhiqiang's sensor connection
+	public static boolean validateRemoteAccess(Socket socket) throws Exception{
+		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		if ("helloworld".equalsIgnoreCase(reader.readLine()))
+			return true;
+		else
+			return false;
 	}
 
 }
