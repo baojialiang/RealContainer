@@ -1,5 +1,7 @@
 package entry;
 
+import framework.Neo;
+import framework.ThreadPool;
 import real.Receiver;
 
 public class Entry {
@@ -10,8 +12,9 @@ public class Entry {
 		Receiver.Receive();
 	}
 	
-	public static void setInitParams(){
+	public static void setInitParams() throws Exception{
 		Receiver.port = 10000;
+		Neo.pool =  ThreadPool.initProcessTaskPool();
 	}
 
 }

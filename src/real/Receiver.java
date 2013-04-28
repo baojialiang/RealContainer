@@ -3,50 +3,55 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import common.Neo;
+
+import framework.Neo;
 
 public class Receiver {
 	
 	public static int port = 10000;
-
+	private static ServerSocket server;
+	
+	
 	public static void Receive() {
 		while(true){
 			try{
-				getSensorConnection();	
-				getRemoteConnection();
+				Neo.socket = getSensorConnection();	
+				processRemoteConnection();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	//from sensor connection	from zhiqiang's sensor
-	public static void getSensorConnection() throws Exception{
+	//from sensor connection from zhiqiang's sensor
+	private static Socket getSensorConnection() throws Exception{
 		while(true){
-			ServerSocket server = new ServerSocket(port);
-			Neo.socket = server.accept();
-			if (validateRemoteAccess(Neo.socket)){
-				return;
+			server = new ServerSocket(port);
+			Socket socket = server.accept();
+			if (validateRemoteAccess(socket)){
+				return socket;
 			}
 		}
 	}
 	
 	//from remote control connection, php side
-	public static void getRemoteConnection() throws Exception{
-        ServerSocket server = new ServerSocket(port);
+	private static void processRemoteConnection() throws Exception{
+        server = new ServerSocket(port);
         while(true){
-        	Socket client = server.accept();
-            Neo.pool.execute(new Processor(client));
+            Neo.pool.execute(new Processor(server.accept()));
         }
 	}
 	
 	//validate zhiqiang's sensor connection
-	public static boolean validateRemoteAccess(Socket socket) throws Exception{
+	private static boolean validateRemoteAccess(Socket socket) throws Exception{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		if ("helloworld".equalsIgnoreCase(reader.readLine()))
-			return true;
-		else
-			return false;
+		return validatePassword(reader.readLine());
 	}
+	
+	//password validation from remote access
+	private static boolean validatePassword(String password){
+		return "helloworld".equalsIgnoreCase(password);
+	}
+	
 
 }

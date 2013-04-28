@@ -1,25 +1,38 @@
 package real;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class Processor implements Runnable{
-	public Socket client;
+import container.ContainerRequest;
+import framework.Neo;
+import framework.SocketThreadBase;
+
+public class Processor extends SocketThreadBase{
 	
 	public Processor(Socket client){
-		this.client = client;
+		super(client);
 	}
 	
 	@Override
 	public void run() {
 		try{
-			BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			
+			ContainerRequest containerRequest = getContainerRequest(this.getRequestString());
+			this.respond("ok");
+			//Neo.socket
 			
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}	
 	}
 	
+	private ContainerRequest getContainerRequest(String data){
+		ContainerRequest request = new ContainerRequest();
+		return request;
+	}
+	
+	private String getRequestData(ContainerRequest containerRequest){
+		return "";
+	}
+
+	
 }
+ 
