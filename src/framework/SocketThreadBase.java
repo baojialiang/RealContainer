@@ -11,6 +11,9 @@ public abstract class SocketThreadBase implements Runnable{
 	private BufferedReader reader;
 	private PrintStream printer;
 	
+	public abstract void processRequest();
+	public abstract void processResponse();
+	public abstract void process();
 	
 	public SocketThreadBase(Socket client){
 		try{
@@ -21,17 +24,31 @@ public abstract class SocketThreadBase implements Runnable{
 		}
 	}
 	
-	
-	public String getRequestString() throws Exception{
-		if(requestString == null && reader != null){
-			return reader.readLine();
-		}else{
-			return requestString;
+	@Override
+	public final void run(){
+		try{
+			processRequest();
+			process();
+			processResponse();
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	
+	public String getRequestString(){
+		try{
+			if(requestString == null && reader != null){
+				return reader.readLine();
+			}else{
+				return requestString;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return "";
+		}
+	}
 	
-	public boolean respond(String data) throws Exception{
+	public boolean respond(String data){
 		try{
 			printer.println(data);
 			printer.close();

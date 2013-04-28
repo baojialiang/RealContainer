@@ -1,10 +1,21 @@
 package container;
 
+import net.sf.json.JSONObject;
+
 public class ContainerRequest {
 
 	private String containerId;
 	private String operation;
 	
+	
+	public ContainerRequest(){	}
+	
+	//get data from the json data
+	public ContainerRequest(String data){
+		JSONObject json = JSONObject.fromObject(data);
+		this.containerId = json.getString("containerId");
+		this.operation = json.getString("opertion");
+	}
 	
 	public String getContainerId() {
 		return containerId;
