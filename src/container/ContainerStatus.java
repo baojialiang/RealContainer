@@ -2,33 +2,38 @@ package container;
 
 import net.sf.json.JSONObject;
 
-public class ContainerRequest {
-
+public class ContainerStatus {
 	private String containerId;
-	private String operation;
+	private String temperature;
 	
 	
-	public ContainerRequest(){	}
+	public ContainerStatus(){}
 	
-	//get data from the json data
-	public ContainerRequest(String data){
+	public ContainerStatus(String data) throws Exception{
 		JSONObject json = JSONObject.fromObject(data);
 		this.containerId = json.getString("containerId");
-		this.operation = json.getString("opertion");
-	}	
+		this.temperature = json.getString("temperature");
+	}
 	
+
 	//getter and setter
 	public String getContainerId() {
 		return containerId;
 	}
+
+
 	public void setContainerId(String containerId) {
 		this.containerId = containerId;
 	}
-	public String getOperation() {
-		return operation;
+
+
+	public String getTemperature() {
+		return temperature;
 	}
-	public void setOperation(String operation) {
-		this.operation = operation;
-	}	
+
+
+	public void setTemperature(String temperature) {
+		this.temperature = temperature;
+	}
 	
 }

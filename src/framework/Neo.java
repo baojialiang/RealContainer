@@ -1,7 +1,6 @@
 package framework;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -12,28 +11,42 @@ import container.ContainerRequest;
 
 public class Neo {
 	public static ThreadPoolExecutor pool;
-	public static Socket socket;
-	public static HashMap<String,ContainerRequest> containerRequest;
+	private static Socket commandSocket;
+	public static HashMap<String, ContainerRequest> containerRequest;
+	public static String WebserverAddress = "http://";
 	
 	private static BufferedReader reader;
 	private static PrintStream printer;
+
 	
-	public static String sendRequest(String data){
-		try{
-			if (reader == null || printer == null){
-				setReaderAndPrinter();
-			}
-			printer.println(data);
-			return reader.readLine();
-		}catch(Exception e){
-			e.printStackTrace();
-			return "";
-		}
+	//getter and setter
+	public static Socket getCommandSocket() {
+		return commandSocket;
+	}
+
+	public static void setCommandSocket(Socket commandSocket) {
+		Neo.commandSocket = commandSocket;
 	}
 	
-	private static void setReaderAndPrinter() throws Exception{
-		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		printer = new PrintStream(socket.getOutputStream());
+	
+	// send command request to Zhiqiang
+	public synchronized static String sendCommandRequest(String data) throws Exception{
+		if (reader == null || printer == null)
+			setReaderAndPrinter();
+		printer.println(data);
+		printer.flush();
+		return reader.readLine();
 	}
+
+	private static void setReaderAndPrinter() throws Exception {
+		reader = new BufferedReader(new InputStreamReader(
+				commandSocket.getInputStream()));
+		printer = new PrintStream(commandSocket.getOutputStream());
+	}
+
+	public static boolean isCommandConnectionClosed(){
+		return commandSocket.isClosed();
+	}
+	
 	
 }

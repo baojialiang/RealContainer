@@ -2,18 +2,17 @@ package entry;
 
 import framework.Neo;
 import framework.ThreadPool;
-import real.Receiver;
+import real.CommandReceiver;
 
 public class Entry {
 	
 	
 	public static void main(String[] args) throws Exception{
 		setInitParams();
-		Receiver.Receive();
+		Neo.pool.execute(new CommandReceiver(10000));
 	}
 	
 	public static void setInitParams() throws Exception{
-		Receiver.port = 10000;
 		Neo.pool =  ThreadPool.initProcessTaskPool();
 	}
 

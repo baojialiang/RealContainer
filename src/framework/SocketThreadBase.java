@@ -10,13 +10,14 @@ public abstract class SocketThreadBase implements Runnable{
 	private String requestString = null;
 	private BufferedReader reader;
 	private PrintStream printer;
-	
-	public abstract void processRequest();
-	public abstract void processResponse();
-	public abstract void process();
+	protected Socket client;
+	public abstract void processRequest() throws Exception;
+	public abstract void processResponse() throws Exception;
+	public abstract void process() throws Exception;
 	
 	public SocketThreadBase(Socket client){
 		try{
+			this.client = client;
 			this.reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			this.printer = new PrintStream(client.getOutputStream());
 		}catch(Exception e){
@@ -35,17 +36,14 @@ public abstract class SocketThreadBase implements Runnable{
 		}
 	}
 	
-	public String getRequestString(){
-		try{
-			if(requestString == null && reader != null){
-				return reader.readLine();
-			}else{
-				return requestString;
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			return "";
+	public String getRequestString() throws Exception{
+
+		if(requestString == null && reader != null){
+			return reader.readLine();
+		}else{
+			return requestString;
 		}
+
 	}
 	
 	public boolean respond(String data){

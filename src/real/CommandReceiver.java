@@ -6,52 +6,56 @@ import java.net.Socket;
 
 import framework.Neo;
 
-public class Receiver {
+public class CommandReceiver implements Runnable{
+
+	private ServerSocket request_server;
 	
-	public static int port = 10000;
-	private static ServerSocket server;
+	public CommandReceiver(int port) throws Exception{
+		request_server = new ServerSocket(port,30);
+	}
 	
-	
-	public static void Receive() {
+	@Override
+	public void run() {
 		while(true){
 			try{
-				Neo.socket = getSensorConnection();	
+				Neo.setCommandSocket(getSensorConnection());	
 				processRemoteConnection();
 			}catch(Exception e){
 				e.printStackTrace();
+				if (Neo.isCommandConnectionClosed())
+					this.run();
+				}
 			}
-		}
 	}
 	
 	//from sensor connection from zhiqiang's sensor
-	private static Socket getSensorConnection() throws Exception{
+	protected Socket getSensorConnection() throws Exception{
 		while(true){
-			server = new ServerSocket(port);
-			Socket socket = server.accept();
+			Socket socket = request_server.accept();
 			if (validateRemoteAccess(socket)){
 				return socket;
 			}
 		}
 	}
 	
+	
 	//from remote control connection, php side
-	private static void processRemoteConnection() throws Exception{
-        server = new ServerSocket(port);
+	protected void processRemoteConnection() throws Exception{
         while(true){
-            Neo.pool.execute(new Processor(server.accept()));
+            Neo.pool.execute(new CommandProcessor(request_server.accept()));
         }
 	}
 	
 	//validate zhiqiang's sensor connection
-	private static boolean validateRemoteAccess(Socket socket) throws Exception{
+	protected boolean validateRemoteAccess(Socket socket) throws Exception{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		return validatePassword(reader.readLine());
 	}
 	
 	//password validation from remote access
-	private static boolean validatePassword(String password){
+	protected boolean validatePassword(String password){
 		return "helloworld".equalsIgnoreCase(password);
 	}
-	
+
 
 }
