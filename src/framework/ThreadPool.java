@@ -6,10 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ThreadPool {
 	
-	public static ThreadPoolExecutor initProcessTaskPool(){
-	     int poolSize = 10;
-	     int maxPoolSize = 15;
-	     long keepAliveTime = 10;
+	public static ThreadPoolExecutor initProcessTaskPool(int poolSize,int maxPoolSize,long keepAliveTime){
+
 	     final ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(
 	               100);
 	    

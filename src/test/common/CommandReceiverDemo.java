@@ -14,14 +14,12 @@ public class CommandReceiverDemo extends CommandReceiver{
 	public void run() {
 		while(true){
 			try{
-				Neo.setCommandSocket(getSensorConnection());	
-				String callBack = Neo.sendCommandRequest("true");
-				String callBack2 = Neo.sendCommandRequest("hehe");
-				String callBack3 = Neo.sendCommandRequest("haha");
+				String callBack = Neo.sensorCommandConnection.sendCommandRequest("true");
+				String callBack2 = Neo.sensorCommandConnection.sendCommandRequest("hehe");
+				String callBack3 = Neo.sensorCommandConnection.sendCommandRequest("haha");
 				return;
 			}catch(Exception e){
 				e.printStackTrace();
-				this.run();
 			}
 		}
 	}

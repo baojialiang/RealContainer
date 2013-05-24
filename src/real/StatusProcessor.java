@@ -29,10 +29,14 @@ public class StatusProcessor extends SocketThreadBase{
 
 	@Override
 	public void processResponse() {
-		if (processStatus){
-			this.respond(CallBackResponse.success.getValue());
-		}else{
-			this.respond(CallBackResponse.failure.getValue());
+		try{
+			if (processStatus){
+				this.respond(CallBackResponse.success.getValue());
+			}else{
+				this.respond(CallBackResponse.failure.getValue());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 

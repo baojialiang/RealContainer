@@ -7,12 +7,13 @@ import java.net.Socket;
 
 public abstract class SocketThreadBase implements Runnable{
 
-	private String requestString = null;
-	private BufferedReader reader;
-	private PrintStream printer;
+	protected BufferedReader reader;
+	protected PrintStream printer;
 	protected Socket client;
+	
+	
 	public abstract void processRequest() throws Exception;
-	public abstract void processResponse() throws Exception;
+	public abstract void processResponse();
 	public abstract void process() throws Exception;
 	
 	public SocketThreadBase(Socket client){
@@ -30,29 +31,17 @@ public abstract class SocketThreadBase implements Runnable{
 		try{
 			processRequest();
 			process();
-			processResponse();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		processResponse();
 	}
 	
 	public String getRequestString() throws Exception{
-
-		if(requestString == null && reader != null){
-			return reader.readLine();
-		}else{
-			return requestString;
-		}
-
+		return reader.readLine();
 	}
 	
-	public boolean respond(String data){
-		try{
-			printer.println(data);
-			printer.close();
-			return true;
-		}catch(Exception e){
-			return false;
-		}
+	public void respond(String data) throws Exception{
+		printer.println(data);
 	}
 }
