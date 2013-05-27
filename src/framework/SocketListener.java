@@ -43,6 +43,8 @@ public abstract class SocketListener implements Runnable{
 						process();
 					}catch(Exception e){
 						e.printStackTrace();
+						if(this.server.isClosed())
+							break;
 					}
 				}
 			}catch(Exception e){
