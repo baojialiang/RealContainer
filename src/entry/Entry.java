@@ -2,7 +2,6 @@ package entry;
 
 import framework.Neo;
 import real.CommandReceiver;
-import real.SensorCommandConnection;
 
 public class Entry {
 	

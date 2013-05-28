@@ -40,6 +40,12 @@ public class SensorCommandConnection extends SocketListener{
 		}
 	}
 
+	public void closeSensorConnection() throws Exception{
+		if(this.commandSocket != null){
+			this.commandSocket.close();
+		}
+	}
+	
 	
 	// set reader and printer
 	protected void setReaderAndPrinter() throws Exception {

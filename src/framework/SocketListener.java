@@ -14,7 +14,7 @@ public abstract class SocketListener implements Runnable{
 		this.concurrency = concurrency;
 	}
 	
-	protected void closeLocalPortBinding(){
+	public void closeLocalPortBinding(){
 		try{
 			if(server != null)
 				server.close();

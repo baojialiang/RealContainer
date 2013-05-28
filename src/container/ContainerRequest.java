@@ -14,7 +14,7 @@ public class ContainerRequest {
 	public ContainerRequest(String data){
 		JSONObject json = JSONObject.fromObject(data);
 		this.containerId = json.getString("containerId");
-		this.operation = json.getString("opertion");
+		this.operation = json.getString("operation");
 	}	
 	
 	//getter and setter
